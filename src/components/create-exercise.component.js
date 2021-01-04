@@ -1,32 +1,39 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
-export default class CreateExercise extends Component {
-  constructor(props) {
-    super(props);
+function CreateExercise() {
 
-    this.onChangeUsername = this.onChangeUsername.bind(this);
-    this.onChangeDescription = this.onChangeDescription.bind(this);
-    this.onChangeDuration = this.onChangeDuration.bind(this);
-    this.onChangeDate = this.onChangeDate.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
+  const [state, setState] = useState({
+    username: '',
+    description: '',
+    duration: 0,
+    date: new Date(),
+    users: []
+  })
+  // constructor(props) {
+  //   super(props);
 
-    this.state = {
-      username: '',
-      description: '',
-      duration: 0,
-      date: new Date(),
-      users: []
-    }
-  }
+  //   onChangeUsername = this.onChangeUsername.bind(this);
+  //   this.onChangeDescription = this.onChangeDescription.bind(this);
+  //   this.onChangeDuration = this.onChangeDuration.bind(this);
+  //   this.onChangeDate = this.onChangeDate.bind(this);
+  //   this.onSubmit = this.onSubmit.bind(this);
 
-  componentDidMount() {
+  // state = {
+  //   username: '',
+  //   description: '',
+  //   duration: 0,
+  //   date: new Date(),
+  //   users: []
+  // }
+
+  useEffect(() => {
     axios.get('http://localhost:5000/users/')
       .then(response => {
         if (response.data.length > 0) {
-          this.setState({
+          setState({
             users: response.data.map(user => user.username),
             username: response.data[0].username
           })
@@ -35,41 +42,47 @@ export default class CreateExercise extends Component {
       .catch((error) => {
         console.log(error);
       })
+  }, [])
 
+  function handleChange(e) {
+    setState({
+      ...state,
+      [e.target.name]: e.target.value
+    });
   }
 
-  onChangeUsername(e) {
-    this.setState({
-      username: e.target.value
-    })
-  }
+  // onChangeUsername(e) {
+  //   setState({
+  //     username: e.target.value
+  //   })
+  // }
 
-  onChangeDescription(e) {
-    this.setState({
-      description: e.target.value
-    })
-  }
+  // onChangeDescription(e) {
+  //   setState({
+  //     description: e.target.value
+  //   })
+  // }
 
-  onChangeDuration(e) {
-    this.setState({
-      duration: e.target.value
-    })
-  }
+  // onChangeDuration(e) {
+  //   setState({
+  //     duration: e.target.value
+  //   })
+  // }
 
-  onChangeDate(date) {
-    this.setState({
-      date: date
-    })
-  }
+  // onChangeDate(date) {
+  //   setState({
+  //     date: date
+  //   })
+  // }
 
-  onSubmit(e) {
+  function onSubmit(e) {
     e.preventDefault();
 
     const exercise = {
-      username: this.state.username,
-      description: this.state.description,
-      duration: this.state.duration,
-      date: this.state.date
+      username: state.username,
+      description: state.description,
+      duration: state.duration,
+      date: state.date
     }
 
     console.log(exercise);
@@ -80,52 +93,51 @@ export default class CreateExercise extends Component {
     window.location = '/';
   }
 
-  render() {
-    return (
+  return (
     <div>
       <h3>Create New Exercise Log</h3>
-      <form onSubmit={this.onSubmit}>
-        <div className="form-group"> 
+      <form onSubmit={onSubmit}>
+        <div className="form-group">
           <label>Username: </label>
           <select ref="userInput"
-              required
-              className="form-control"
-              value={this.state.username}
-              onChange={this.onChangeUsername}>
-              {
-                this.state.users.map(function(user) {
-                  return <option 
-                    key={user}
-                    value={user}>{user}
-                    </option>;
-                })
-              }
+            required
+            className="form-control"
+            value={state.username}
+            onChange={handleChange}>
+            {
+              state.users.map(function (user) {
+                return <option
+                  key={user}
+                  value={user}>{user}
+                </option>;
+              })
+            }
           </select>
         </div>
-        <div className="form-group"> 
+        <div className="form-group">
           <label>Description: </label>
-          <input  type="text"
-              required
-              className="form-control"
-              value={this.state.description}
-              onChange={this.onChangeDescription}
-              />
+          <input type="text"
+            required
+            className="form-control"
+            value={state.description}
+            onChange={handleChange}
+          />
         </div>
         <div className="form-group">
           <label>Duration (in minutes): </label>
-          <input 
-              type="text" 
-              className="form-control"
-              value={this.state.duration}
-              onChange={this.onChangeDuration}
-              />
+          <input
+            type="text"
+            className="form-control"
+            value={state.duration}
+            onChange={handleChange}
+          />
         </div>
         <div className="form-group">
           <label>Date: </label>
           <div>
             <DatePicker
-              selected={this.state.date}
-              onChange={this.onChangeDate}
+              selected={state.date}
+              onChange={handleChange}
             />
           </div>
         </div>
@@ -135,6 +147,7 @@ export default class CreateExercise extends Component {
         </div>
       </form>
     </div>
-    )
-  }
+  )
 }
+
+export default CreateExercise;
