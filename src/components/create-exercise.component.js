@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
@@ -12,6 +12,9 @@ function CreateExercise() {
     date: new Date(),
     users: []
   })
+
+  const inputRef = useRef(null)
+
   // constructor(props) {
   //   super(props);
 
@@ -30,7 +33,7 @@ function CreateExercise() {
   // }
 
   useEffect(() => {
-    axios.get('http://localhost:5000/users/')
+    axios.get('http://localhost:3420/users/')
       .then(response => {
         if (response.data.length > 0) {
           setState({
@@ -87,7 +90,7 @@ function CreateExercise() {
 
     console.log(exercise);
 
-    axios.post('http://localhost:5000/exercises/add', exercise)
+    axios.post('http://localhost:3420/exercises/add', exercise)
       .then(res => console.log(res.data));
 
     window.location = '/';
@@ -99,7 +102,7 @@ function CreateExercise() {
       <form onSubmit={onSubmit}>
         <div className="form-group">
           <label>Username: </label>
-          <select ref="userInput"
+          <select ref={inputRef}
             required
             className="form-control"
             value={state.username}
