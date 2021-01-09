@@ -5,32 +5,16 @@ import "react-datepicker/dist/react-datepicker.css";
 
 function CreateExercise() {
 
+  const [date, setDate] = useState(new Date())
   const [state, setState] = useState({
     username: '',
     description: '',
-    duration: 0,
-    date: new Date(),
+    duration: '',
+    // date: new Date(),
     users: []
   })
 
   const inputRef = useRef(null)
-
-  // constructor(props) {
-  //   super(props);
-
-  //   onChangeUsername = this.onChangeUsername.bind(this);
-  //   this.onChangeDescription = this.onChangeDescription.bind(this);
-  //   this.onChangeDuration = this.onChangeDuration.bind(this);
-  //   this.onChangeDate = this.onChangeDate.bind(this);
-  //   this.onSubmit = this.onSubmit.bind(this);
-
-  // state = {
-  //   username: '',
-  //   description: '',
-  //   duration: 0,
-  //   date: new Date(),
-  //   users: []
-  // }
 
   useEffect(() => {
     axios.get('http://localhost:3420/users/')
@@ -48,35 +32,18 @@ function CreateExercise() {
   }, [])
 
   function handleChange(e) {
+    console.log('Event: ', e)
     setState({
       ...state,
       [e.target.name]: e.target.value
     });
   }
 
-  // onChangeUsername(e) {
-  //   setState({
-  //     username: e.target.value
-  //   })
-  // }
-
-  // onChangeDescription(e) {
-  //   setState({
-  //     description: e.target.value
-  //   })
-  // }
-
-  // onChangeDuration(e) {
-  //   setState({
-  //     duration: e.target.value
-  //   })
-  // }
-
-  // onChangeDate(date) {
-  //   setState({
-  //     date: date
-  //   })
-  // }
+  function onChangeDate(date) {
+    setDate(
+      date
+    )
+  }
 
   function onSubmit(e) {
     e.preventDefault();
@@ -85,7 +52,7 @@ function CreateExercise() {
       username: state.username,
       description: state.description,
       duration: state.duration,
-      date: state.date
+      date: date
     }
 
     console.log(exercise);
@@ -123,8 +90,9 @@ function CreateExercise() {
             required
             className="form-control"
             value={state.description}
+            name="description"
             onChange={handleChange}
-          />
+            />
         </div>
         <div className="form-group">
           <label>Duration (in minutes): </label>
@@ -132,6 +100,7 @@ function CreateExercise() {
             type="text"
             className="form-control"
             value={state.duration}
+            name="duration"
             onChange={handleChange}
           />
         </div>
@@ -139,8 +108,8 @@ function CreateExercise() {
           <label>Date: </label>
           <div>
             <DatePicker
-              selected={state.date}
-              onChange={handleChange}
+              selected={date}
+              onChange={onChangeDate}
             />
           </div>
         </div>
