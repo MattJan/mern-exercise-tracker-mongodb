@@ -10,7 +10,7 @@ function CreateExercise() {
     username: '',
     description: '',
     duration: '',
-    // date: new Date(),
+    date: new Date(),
     users: []
   })
 
@@ -32,7 +32,6 @@ function CreateExercise() {
   }, [])
 
   function handleChange(e) {
-    console.log('Event: ', e)
     setState({
       ...state,
       [e.target.name]: e.target.value
@@ -40,9 +39,9 @@ function CreateExercise() {
   }
 
   function onChangeDate(date) {
-    setDate(
-      date
-    )
+    setState({
+      date: date
+    })
   }
 
   function onSubmit(e) {
@@ -102,7 +101,7 @@ function CreateExercise() {
             value={state.duration}
             name="duration"
             onChange={handleChange}
-          />
+            />
         </div>
         <div className="form-group">
           <label>Date: </label>
