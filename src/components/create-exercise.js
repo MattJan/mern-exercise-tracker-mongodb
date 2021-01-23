@@ -40,7 +40,6 @@ function CreateExercise() {
 
   function onChangeDate(date) {
     setDate(date)
-    console.log(date)
   }
 
   function onSubmit(e) {
@@ -53,8 +52,6 @@ function CreateExercise() {
       date: date
     }
 
-    console.log(exercise);
-
     axios.post('http://localhost:3420/exercises/add', exercise)
       .then(res => console.log(res.data));
 
@@ -63,7 +60,7 @@ function CreateExercise() {
 
   return (
     <div>
-      <h3>Create New Exercise Log</h3>
+      <h3>Create New Exercise Entry</h3>
       <form onSubmit={onSubmit}>
         <div className="form-group">
           <label>Username: </label>
@@ -71,7 +68,9 @@ function CreateExercise() {
             required
             className="form-control"
             value={state.username}
-            onChange={handleChange}>
+            onChange={handleChange}
+            name={'username'}
+            >
             {
               state.users.map(function (user) {
                 return <option

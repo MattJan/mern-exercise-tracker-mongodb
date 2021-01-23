@@ -5,43 +5,45 @@ import "react-datepicker/dist/react-datepicker.css";
 
 function EditExercise (props) {
 
-    // const [date, setDate] = useState(new Date())
+    const [date, setDate] = useState(new Date())
 
-    const [state, setState] = useState({
-      username: '',
-      description: '',
-      duration: 0,
-      users: []
-    })
+    const [state, setState] = useState({})
+
+    const [users, setUsers] = useState([])
 
   const formRef = useRef(null)
 
   useEffect(() => {
-    axios.get('http://localhost:3420/exercises/'+props.match.params.id)
-      .then(response => {
-        setState({
-          username: response.data.username,
-          description: response.data.description,
-          duration: response.data.duration,
-        })   
-        // setDate({date: response.data.date})
+    
+    axios.get('http://localhost:3420/exercises/' + props.match.params.id)
+    .then(response => {
+      setState({
+        username: response.data.username,
+        description: response.data.description,
+        duration: response.data.duration,
+        date: response.data.date
       })
-      .catch(function (error) {
-        console.log(error);
-      })
-
+      console.log('exercise useeffect response', response)
+    })
+    .catch(function (error) {
+      console.log(error);
+    })
+  }, [])
+    
+    useEffect(() => {
     axios.get('http://localhost:3420/users/')
-      .then(response => {
-        if (response.data.length > 0) {
-          setState({
-            users: response.data.map(user => user.username),
-          })
+    .then(response => {
+      if (response.data.length > 0) {
+        setUsers(
+          response.data.map(user => user.username)
+          )
         }
+        console.log('user useEffect response', response)
       })
       .catch((error) => {
         console.log(error);
       })
-  })
+  }, [])
 
   function onChange(e) {
     setState({
@@ -50,11 +52,9 @@ function EditExercise (props) {
     })
   }
 
-  // function onChangeDate(date) {
-  //   setDate({
-  //     date: date
-  //   })
-  // }
+  function onChangeDate(date) {
+    setDate(date)
+  }
 
   function onSubmit(e) {
     e.preventDefault();
@@ -63,7 +63,7 @@ function EditExercise (props) {
       username: state.username,
       description: state.description,
       duration: state.duration,
-      // date: date
+      date: date
     }
 
     console.log(exercise);
@@ -76,17 +76,23 @@ function EditExercise (props) {
 
     return (
     <div>
-      <h3>Edit Exercise Log</h3>
+      <h3>Edit Exercise Entry</h3>
       <form onSubmit={onSubmit}>
         <div className="form-group"> 
           <label>Username: </label>
-          <select ref={formRef}
+          <select 
+            ref={formRef}
             required
             className="form-control"
             value={state.username}
-            onChange={onChange}>
+            name={'username'}
+            onChange={onChange}
+            selected={state.username}
+            >
             {
-              state.users.map(function (user) {
+              // console.log('state: ', state)
+              // &&
+              users.map(function (user) {
                 return <option
                   key={user}
                   value={user}>{user}
@@ -115,16 +121,16 @@ function EditExercise (props) {
               onChange={onChange}
               />
         </div>
-        {/* <div className="form-group">
+        <div className="form-group">
           <label>Date: </label>
           <div>
             <DatePicker
               selected={date}
-              // name={'date'}
-              onChange={onChangeDate}
+              onChange={date => onChangeDate(date)}
+              // onChange={onChangeDate}
             />
           </div>
-        </div> */}
+        </div>
 
         <div className="form-group">
           <input type="submit" value="Edit Exercise Log" className="btn btn-primary" />
