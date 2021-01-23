@@ -8,6 +8,12 @@ import EditExercise from "./components/edit-exercise";
 import CreateExercise from "./components/create-exercise";
 import CreateUser from "./components/create-user";
 
+//TODO translate whole app to functional components
+//TODO add in extra fields 
+//TODO display fields only if they exist
+//TODO add snackbar to alert about changes
+//TODO investigate GQL to query API
+
 function App() {
   return (
     <Router>
